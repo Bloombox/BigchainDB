@@ -135,7 +135,7 @@ setup(
             'bigchaindb=bigchaindb.commands.bigchaindb:main'
         ],
     },
-    install_requires=install_requires,
+    install_requires=install_requires + dev_require + tests_require + docs_require + benchmarks_require,
     setup_requires=['pytest-runner'],
     tests_require=tests_require,
     extras_require={
