@@ -119,14 +119,14 @@ metadata:
   namespace: default
 data:
   # bdb-persistent-peers is the list of all the peers in the network.
-  bdb-persistent-peers: "bdb-instance-0,bdb-instance-1,bdb-instance-2,bdb-instance-3"
+  bdb-persistent-peers: "bdb-instance-0"
 
   # bdb-validators is the list of all validators in the network.
-  bdb-validators: "bdb-instance-0,bdb-instance-1,bdb-instance-2,bdb-instance-3"
+  bdb-validators: "bdb-instance-0"
 
   # bdb-validator-power is the validators voting power, make sure the order and
   # the number of nodes in bdb-validator-power and bdb-validators is the same.
-  bdb-validator-power: "10,10,10,10"
+  bdb-validator-power: "10"
 
   # bdb-genesis-time is the official time of blockchain start.
   # example: 0001-01-01T00:00:00Z
