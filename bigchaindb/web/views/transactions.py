@@ -79,7 +79,7 @@ class TransactionListApi(Resource):
         except ValidationError as e:
             return make_error(
                 400,
-                'Invalid transaction ({}): {}'.format(type(e).__name__, e)
+                'Invalid transaction, could not deserialize ({}): {}'.format(type(e).__name__, e)
             )
 
         with pool() as bigchain:
@@ -88,7 +88,7 @@ class TransactionListApi(Resource):
             except ValidationError as e:
                 return make_error(
                     400,
-                    'Invalid transaction ({}): {}'.format(type(e).__name__, e)
+                    'Invalid transaction, could not validate ({}): {}'.format(type(e).__name__, e)
                 )
             else:
                 status_code, message = bigchain.write_transaction(tx_obj, mode)
