@@ -1,3 +1,9 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
+import codecs
+
 import abci.types_pb2 as types
 import json
 import pytest
@@ -5,34 +11,38 @@ import pytest
 
 from abci.server import ProtocolHandler
 from abci.encoding import read_messages
-from copy import deepcopy
+from bigchaindb.version import __tm_supported_versions__
 from io import BytesIO
 
 
-@pytest.mark.tendermint
 @pytest.mark.bdb
-def test_app(tb):
+def test_app(b, init_chain_request):
     from bigchaindb import App
     from bigchaindb.tendermint_utils import calculate_hash
     from bigchaindb.common.crypto import generate_key_pair
     from bigchaindb.models import Transaction
 
-    b = tb
     app = App(b)
     p = ProtocolHandler(app)
 
-    data = p.process('info', types.Request(info=types.RequestInfo(version='2')))
+    data = p.process('info',
+                     types.Request(info=types.RequestInfo(version=__tm_supported_versions__[0])))
     res = next(read_messages(BytesIO(data), types.Response))
     assert res
     assert res.info.last_block_app_hash == b''
     assert res.info.last_block_height == 0
     assert not b.get_latest_block()
 
-    p.process('init_chain', types.Request(init_chain=types.RequestInitChain()))
+    p.process('init_chain', types.Request(init_chain=init_chain_request))
     block0 = b.get_latest_block()
     assert block0
     assert block0['height'] == 0
     assert block0['app_hash'] == ''
+
+    pk = codecs.encode(init_chain_request.validators[0].pub_key.data, 'base64').decode().strip('\n')
+    [validator] = b.get_validators(height=1)
+    assert validator['public_key']['value'] == pk
+    assert validator['voting_power'] == 10
 
     alice = generate_key_pair()
     bob = generate_key_pair()
@@ -92,46 +102,10 @@ def test_app(tb):
 
     block0 = b.get_latest_block()
     assert block0
-    assert block0['height'] == 1
+    assert block0['height'] == 2
 
     # when empty block is generated hash of previous block should be returned
     assert block0['app_hash'] == new_block_hash
-
-
-@pytest.mark.abci
-def test_upsert_validator(b, alice):
-    from bigchaindb.backend.query import VALIDATOR_UPDATE_ID
-    from bigchaindb.backend import query, connect
-    from bigchaindb.models import Transaction
-    from bigchaindb.tendermint_utils import public_key_to_base64
-    import time
-
-    conn = connect()
-    power = 1
-    public_key = '9B3119650DF82B9A5D8A12E38953EA47475C09F0C48A4E6A0ECE182944B24403'
-
-    validator = {'pub_key': {'type': 'AC26791624DE60',
-                             'data': public_key},
-                 'power': power}
-    validator_update = {'validator': validator,
-                        'update_id': VALIDATOR_UPDATE_ID}
-
-    query.store_validator_update(conn, deepcopy(validator_update))
-
-    tx = Transaction.create([alice.public_key],
-                            [([alice.public_key], 1)],
-                            asset=None)\
-                    .sign([alice.private_key])
-
-    code, message = b.write_transaction(tx, 'broadcast_tx_commit')
-    assert code == 202
-    time.sleep(5)
-
-    validators = b.get_validators()
-    validators = [(v['pub_key']['value'], v['voting_power']) for v in validators]
-
-    public_key64 = public_key_to_base64(public_key)
-    assert ((public_key64, str(power)) in validators)
 
 
 @pytest.mark.abci
@@ -157,12 +131,24 @@ def test_post_transaction_responses(tendermint_ws_url, b):
     code, message = b.write_transaction(tx_transfer, 'broadcast_tx_commit')
     assert code == 202
 
-    # NOTE: DOESN'T WORK (double spend)
-    # Tendermint crashes with error: Unexpected result type
-    # carly = generate_key_pair()
-    # double_spend = Transaction.transfer(tx.to_inputs(),
-    #                                     [([carly.public_key], 1)],
-    #                                     asset_id=tx.id)\
-    #                           .sign([alice.private_key])
-    # code, message = b.write_transaction(double_spend, 'broadcast_tx_commit')
-    # assert code == 500
+    carly = generate_key_pair()
+    double_spend = Transaction.transfer(
+        tx.to_inputs(),
+        [([carly.public_key], 1)],
+        asset_id=tx.id,
+    ).sign([alice.private_key])
+    for mode in ('broadcast_tx_sync', 'broadcast_tx_commit'):
+        code, message = b.write_transaction(double_spend, mode)
+        assert code == 500
+        assert message == 'Transaction validation failed'
+
+
+@pytest.mark.bdb
+def test_exit_when_tm_ver_not_supported(b):
+    from bigchaindb import App
+
+    app = App(b)
+    p = ProtocolHandler(app)
+
+    with pytest.raises(SystemExit):
+        p.process('info', types.Request(info=types.RequestInfo(version='2')))

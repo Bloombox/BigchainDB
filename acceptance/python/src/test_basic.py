@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 # # Basic Acceptance Test
 # Here we check that the primitives of the system behave as expected.
 # As you will see, this script tests basic stuff like:
@@ -36,7 +40,6 @@ def test_basic():
     # The two keypairs will be called—drum roll—Alice and Bob.
     alice, bob = generate_keypair(), generate_keypair()
 
-
     # ## Alice registers her bike in BigchainDB
     # Alice has a nice bike, and here she creates the "digital twin"
     # of her bike.
@@ -57,9 +60,8 @@ def test_basic():
     # a variable with a short and easy name
     bike_id = fulfilled_creation_tx['id']
 
-
     # Now she is ready to send it to the BigchainDB Network.
-    sent_transfer_tx = bdb.transactions.send(fulfilled_creation_tx)
+    sent_transfer_tx = bdb.transactions.send_commit(fulfilled_creation_tx)
 
     # And just to be 100% sure, she also checks if she can retrieve
     # it from the BigchainDB node.
@@ -68,7 +70,6 @@ def test_basic():
     # Alice is now the proud owner of one unspent asset.
     assert len(bdb.outputs.get(alice.public_key, spent=False)) == 1
     assert bdb.outputs.get(alice.public_key)[0]['transaction_id'] == bike_id
-
 
     # ## Alice transfers her bike to Bob
     # After registering her bike, Alice is ready to transfer it to Bob.
@@ -106,7 +107,7 @@ def test_basic():
             private_keys=alice.private_key)
 
     # She finally sends the transaction to a BigchainDB node.
-    sent_transfer_tx = bdb.transactions.send(fulfilled_transfer_tx)
+    sent_transfer_tx = bdb.transactions.send_commit(fulfilled_transfer_tx)
 
     # And just to be 100% sure, she also checks if she can retrieve
     # it from the BigchainDB node.

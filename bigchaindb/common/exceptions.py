@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 """Custom exceptions used in the `bigchaindb` package.
 """
 from bigchaindb.exceptions import BigchainDBError
@@ -5,10 +9,6 @@ from bigchaindb.exceptions import BigchainDBError
 
 class ConfigurationError(BigchainDBError):
     """Raised when there is a problem with server configuration"""
-
-
-class DatabaseAlreadyExists(BigchainDBError):
-    """Raised when trying to create the database but the db is already there"""
 
 
 class DatabaseDoesNotExist(BigchainDBError):
@@ -66,12 +66,6 @@ class InvalidSignature(ValidationError):
     """
 
 
-class TransactionNotInValidBlock(ValidationError):
-    """Raised when a transfer transaction is attempting to fulfill the
-    outputs of a transaction that is in an invalid or undecided block
-    """
-
-
 class AssetIdMismatch(ValidationError):
     """Raised when multiple transaction inputs related to different assets"""
 
@@ -96,10 +90,6 @@ class ThresholdTooDeep(ValidationError):
     """Raised if threshold condition is too deep"""
 
 
-class GenesisBlockAlreadyExistsError(ValidationError):
-    """Raised when trying to create the already existing genesis block"""
-
-
 class MultipleValidatorOperationError(ValidationError):
     """Raised when a validator update pending but new request is submited"""
 
@@ -118,3 +108,7 @@ class UnequalValidatorSet(ValidationError):
 
 class InvalidPowerChange(ValidationError):
     """Raised if proposed power change in validator set is >=1/3 total power"""
+
+
+class InvalidPublicKey(ValidationError):
+    """Raised if public key doesn't match the encoding type"""

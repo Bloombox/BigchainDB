@@ -1,3 +1,9 @@
+<!---
+Copyright BigchainDB GmbH and BigchainDB contributors
+SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+Code is Apache-2.0 and docs are CC-BY-4.0
+--->
+
 # Notes on Running a Local Dev Node as Processes
 
 The following doc describes how to run a local node for developing BigchainDB Tendermint version.
@@ -19,13 +25,13 @@ After the installation of MongoDB is complete, run MongoDB using `sudo mongod`
 
 ### Installing a Tendermint Executable
 
-Find [the version number of the latest Tendermint release](https://github.com/tendermint/tendermint/releases) and install it using the following, where 0.22.3 should be replaced by the latest released version number:
+The version of BigchainDB Server described in these docs only works well with Tendermint 0.22.8 (not a higher version number). Install that:
 
 ```bash
 $ sudo apt install -y unzip
-$ wget https://github.com/tendermint/tendermint/releases/download/v0.22.3/tendermint_0.22.3_linux_amd64.zip
-$ unzip tendermint_0.22.3_linux_amd64.zip
-$ rm tendermint_0.22.3_linux_amd64.zip
+$ wget https://github.com/tendermint/tendermint/releases/download/v0.22.8/tendermint_0.22.8_linux_amd64.zip
+$ unzip tendermint_0.22.8_linux_amd64.zip
+$ rm tendermint_0.22.8_linux_amd64.zip
 $ sudo mv tendermint /usr/local/bin
 ```
 
@@ -63,7 +69,7 @@ The commands are:
 export PATH=${PATH}:${GOPATH}/bin
 ```
 
-Follow [the Tendermint docs](https://tendermint.readthedocs.io/en/master/install.html#from-source) to install Tendermint from source.
+Follow [the Tendermint docs](https://tendermint.com/docs/introduction/install.html#from-source) to install Tendermint from source.
 
 If the installation is successful then Tendermint is installed at `$GOPATH/bin`. To ensure Tendermint's installed fine execute the following command,
 

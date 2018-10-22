@@ -1,25 +1,12 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 """Query interfaces for backends."""
 
 from functools import singledispatch
 
 from bigchaindb.backend.exceptions import OperationError
-
-VALIDATOR_UPDATE_ID = 'a_unique_id_string'
-PRE_COMMIT_ID = 'a_unique_id_string'
-
-
-@singledispatch
-def store_transaction(connection, signed_transaction):
-    """Write a transaction to the backlog table.
-
-    Args:
-        signed_transaction (dict): a signed transaction.
-
-    Returns:
-        The result of the operation.
-    """
-
-    raise NotImplementedError
 
 
 @singledispatch
@@ -326,12 +313,11 @@ def get_unspent_outputs(connection, *, query=None):
 
 
 @singledispatch
-def store_pre_commit_state(connection, commit_id, state):
-    """Store pre-commit state in a document with `id` as `commit_id`.
+def store_pre_commit_state(connection, state):
+    """Store pre-commit state.
 
     Args:
-        commit_id (string): `id` of document where `state` should be stored.
-        state (dict): commit state.
+        state (dict): pre-commit state.
 
     Returns:
         The result of the operation.
@@ -341,35 +327,103 @@ def store_pre_commit_state(connection, commit_id, state):
 
 
 @singledispatch
-def store_validator_update(conn, validator_update):
-    """Store a update for the validator set"""
-
-    raise NotImplementedError
-
-
-@singledispatch
-def get_pre_commit_state(connection, commit_id):
-    """Get pre-commit state where `id` is `commit_id`.
-
-    Args:
-        commit_id (string): `id` of document where `state` should be stored.
+def get_pre_commit_state(connection):
+    """Get pre-commit state.
 
     Returns:
-        Document with `id` as `commit_id`
+        Document representing the pre-commit state.
     """
 
     raise NotImplementedError
 
 
 @singledispatch
-def get_validator_update(conn):
-    """Get validator updates which are not synced"""
+def store_validator_set(conn, validator_update):
+    """Store updated validator set"""
 
     raise NotImplementedError
 
 
 @singledispatch
-def delete_validator_update(conn, id):
-    """Set the sync status for validator update documents"""
+def delete_validator_set(conn, height):
+    """Delete the validator set at the given height."""
 
+    raise NotImplementedError
+
+
+@singledispatch
+def store_election(conn, election_id, height, is_concluded):
+    """Store election record"""
+
+    raise NotImplementedError
+
+
+@singledispatch
+def store_elections(conn, elections):
+    """Store election records in bulk"""
+
+    raise NotImplementedError
+
+
+@singledispatch
+def delete_elections(conn, height):
+    """Delete all election records at the given height"""
+
+    raise NotImplementedError
+
+
+@singledispatch
+def get_validator_set(conn, height):
+    """Get validator set for a given `height`, if `height` is not specified
+    then return the latest validator set
+    """
+
+    raise NotImplementedError
+
+
+@singledispatch
+def get_election(conn, election_id):
+    """Return the election record
+    """
+
+    raise NotImplementedError
+
+
+@singledispatch
+def get_asset_tokens_for_public_key(connection, asset_id, public_key):
+    """Retrieve a list of tokens of type `asset_id` that are owned by the `public_key`.
+    Args:
+        asset_id (str): Id of the token.
+        public_key (str): base58 encoded public key
+    Returns:
+        Iterator of transaction that list given owner in conditions.
+    """
+    raise NotImplementedError
+
+
+@singledispatch
+def store_abci_chain(conn, height, chain_id, is_synced=True):
+    """Create or update an ABCI chain at the given height.
+    Usually invoked in the beginning of the ABCI communications (height=0)
+    or when ABCI client (like Tendermint) is migrated (any height).
+
+    Args:
+        is_synced: True if the chain is known by both ABCI client and server
+    """
+
+    raise NotImplementedError
+
+
+@singledispatch
+def delete_abci_chain(conn, height):
+    """Delete the ABCI chain at the given height."""
+
+    raise NotImplementedError
+
+
+@singledispatch
+def get_latest_abci_chain(conn):
+    """Returns the ABCI chain stored at the biggest height, if any,
+    None otherwise.
+    """
     raise NotImplementedError

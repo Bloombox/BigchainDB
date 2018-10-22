@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 import pytest
 
 BLOCKS_ENDPOINT = '/api/v1/blocks/'
@@ -46,7 +50,5 @@ def test_get_blocks_by_txid_endpoint_returns_400_bad_query_params(client):
     res = client.get(BLOCKS_ENDPOINT + '?transaction_id=123&status=123')
     assert res.status_code == 400
     assert res.json == {
-        'message': {
-            'status': '123 is not a valid choice'
-        }
+        'message': 'Unknown arguments: status'
     }

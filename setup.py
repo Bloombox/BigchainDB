@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 """
 BigchainDB: The Blockchain Database
 
@@ -40,7 +44,7 @@ dev_require = [
 ]
 
 docs_require = [
-    'Sphinx>=1.4.8',
+    'Sphinx~=1.0',
     'recommonmark>=0.4.0',
     'sphinx-rtd-theme>=0.1.9',
     'sphinxcontrib-httpdomain>=1.5.0',
@@ -56,7 +60,7 @@ tests_require = [
     'flake8-quotes==0.8.1',
     'hypothesis~=3.18.5',
     'hypothesis-regex',
-    'pylint',
+    # Removed pylint because its GPL license isn't Apache2-compatible
     'pytest>=3.0.0',
     'pytest-cov>=2.2.1',
     'pytest-mock',
@@ -67,16 +71,12 @@ tests_require = [
     'tox',
 ] + docs_require
 
-benchmarks_require = [
-    'line-profiler==1.0',
-]
-
 install_requires = [
     # TODO Consider not installing the db drivers, or putting them in extras.
     'pymongo~=3.6',
     'pysha3~=1.0.2',
-    'cryptoconditions~=0.6.0.dev',
-    'python-rapidjson==0.0.11',
+    'cryptoconditions==0.7.2',
+    'python-rapidjson~=0.6.0',
     'logstats~=0.2.1',
     'flask>=0.10.1',
     'flask-cors~=3.0.0',
@@ -86,9 +86,9 @@ install_requires = [
     'jsonschema~=2.5.1',
     'pyyaml~=3.12',
     'aiohttp~=3.0',
-    'python-rapidjson-schema==0.1.1',
     'bigchaindb-abci==0.5.1',
     'setproctitle~=1.1.0',
+    'packaging~=18.0',
 ]
 
 setup(
@@ -140,7 +140,7 @@ setup(
     tests_require=tests_require,
     extras_require={
         'test': tests_require,
-        'dev': dev_require + tests_require + docs_require + benchmarks_require,
+        'dev': dev_require + tests_require + docs_require,
         'docs': docs_require,
     },
     package_data={'bigchaindb.common.schema': ['*.yaml']},

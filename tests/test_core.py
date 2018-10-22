@@ -1,10 +1,10 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 import pytest
 
 
-pytestmark = pytest.mark.tendermint
-
-
-@pytest.mark.skipif(reason='will be fixed in another PR')
 @pytest.fixture
 def config(request, monkeypatch):
     backend = request.config.getoption('--database-backend')
@@ -21,6 +21,10 @@ def config(request, monkeypatch):
             'connection_timeout': 5000,
             'max_tries': 3
         },
+        'tendermint': {
+            'host': 'localhost',
+            'port': 26657,
+        },
         'CONFIGURED': True,
     }
 
@@ -29,24 +33,22 @@ def config(request, monkeypatch):
     return config
 
 
-@pytest.mark.skipif(reason='will be fixed in another PR')
 def test_bigchain_class_default_initialization(config):
     from bigchaindb import BigchainDB
-    from bigchaindb.consensus import BaseConsensusRules
+    from bigchaindb.validation import BaseValidationRules
     from bigchaindb.backend.connection import Connection
     bigchain = BigchainDB()
     assert isinstance(bigchain.connection, Connection)
     assert bigchain.connection.host == config['database']['host']
     assert bigchain.connection.port == config['database']['port']
     assert bigchain.connection.dbname == config['database']['name']
-    assert bigchain.consensus == BaseConsensusRules
+    assert bigchain.validation == BaseValidationRules
 
 
-@pytest.mark.skipif(reason='will be fixed in another PR')
-def test_bigchain_class_initialization_with_parameters(config):
+def test_bigchain_class_initialization_with_parameters():
     from bigchaindb import BigchainDB
     from bigchaindb.backend import connect
-    from bigchaindb.consensus import BaseConsensusRules
+    from bigchaindb.validation import BaseValidationRules
     init_db_kwargs = {
         'backend': 'localmongodb',
         'host': 'this_is_the_db_host',
@@ -54,29 +56,15 @@ def test_bigchain_class_initialization_with_parameters(config):
         'name': 'this_is_the_db_name',
     }
     connection = connect(**init_db_kwargs)
-    bigchain = BigchainDB(connection=connection, **init_db_kwargs)
+    bigchain = BigchainDB(connection=connection)
     assert bigchain.connection == connection
     assert bigchain.connection.host == init_db_kwargs['host']
     assert bigchain.connection.port == init_db_kwargs['port']
     assert bigchain.connection.dbname == init_db_kwargs['name']
-    assert bigchain.consensus == BaseConsensusRules
+    assert bigchain.validation == BaseValidationRules
 
 
-@pytest.mark.skipif(reason='will be fixed in another PR')
-def test_get_blocks_status_containing_tx(monkeypatch):
-    from bigchaindb.backend import query as backend_query
-    from bigchaindb import BigchainDB
-    blocks = [
-        {'id': 1}, {'id': 2}
-    ]
-    monkeypatch.setattr(backend_query, 'get_blocks_status_from_transaction', lambda x: blocks)
-    monkeypatch.setattr(BigchainDB, 'block_election_status', lambda x, y, z: BigchainDB.BLOCK_VALID)
-    bigchain = BigchainDB(public_key='pubkey', private_key='privkey')
-    with pytest.raises(Exception):
-        bigchain.get_blocks_status_containing_tx('txid')
-
-
-@pytest.mark.genesis
+@pytest.mark.bdb
 def test_get_spent_issue_1271(b, alice, bob, carol):
     from bigchaindb.models import Transaction
 
@@ -84,7 +72,7 @@ def test_get_spent_issue_1271(b, alice, bob, carol):
         [carol.public_key],
         [([carol.public_key], 8)],
     ).sign([carol.private_key])
-    assert b.validate_transaction(tx_1)
+    assert tx_1.validate(b)
     b.store_bulk_transactions([tx_1])
 
     tx_2 = Transaction.transfer(
@@ -94,7 +82,7 @@ def test_get_spent_issue_1271(b, alice, bob, carol):
          ([carol.public_key], 4)],
         asset_id=tx_1.id,
     ).sign([carol.private_key])
-    assert b.validate_transaction(tx_2)
+    assert tx_2.validate(b)
     b.store_bulk_transactions([tx_2])
 
     tx_3 = Transaction.transfer(
@@ -103,7 +91,7 @@ def test_get_spent_issue_1271(b, alice, bob, carol):
          ([carol.public_key], 3)],
         asset_id=tx_1.id,
     ).sign([carol.private_key])
-    assert b.validate_transaction(tx_3)
+    assert tx_3.validate(b)
     b.store_bulk_transactions([tx_3])
 
     tx_4 = Transaction.transfer(
@@ -111,7 +99,7 @@ def test_get_spent_issue_1271(b, alice, bob, carol):
         [([bob.public_key], 3)],
         asset_id=tx_1.id,
     ).sign([alice.private_key])
-    assert b.validate_transaction(tx_4)
+    assert tx_4.validate(b)
     b.store_bulk_transactions([tx_4])
 
     tx_5 = Transaction.transfer(
@@ -119,7 +107,8 @@ def test_get_spent_issue_1271(b, alice, bob, carol):
         [([alice.public_key], 2)],
         asset_id=tx_1.id,
     ).sign([bob.private_key])
-    assert b.validate_transaction(tx_5)
+    assert tx_5.validate(b)
+
     b.store_bulk_transactions([tx_5])
 
     assert b.get_spent(tx_2.id, 0) == tx_5
