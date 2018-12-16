@@ -1,6 +1,6 @@
 ARG python_version=3.6
 FROM python:${python_version}
-LABEL maintainer "dev@bigchaindb.com"
+LABEL maintainer "devs@bigchaindb.com"
 
 RUN apt-get update \
     && apt-get install -y vim bash \
@@ -34,4 +34,3 @@ COPY . /usr/src/app/
 WORKDIR /usr/src/app
 RUN pip install --no-cache-dir --process-dependency-links -e .[dev]
 RUN bigchaindb -y configure
-

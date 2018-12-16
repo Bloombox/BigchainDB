@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 import json
 from unittest.mock import Mock, patch
 
@@ -19,7 +23,6 @@ def test_get_transaction_endpoint(client, posted_create_tx):
     assert res.status_code == 200
 
 
-@pytest.mark.tendermint
 def test_get_transaction_returns_404_if_not_found(client):
     res = client.get(TX_ENDPOINT + '123')
     assert res.status_code == 404
@@ -261,7 +264,6 @@ def test_post_create_transaction_with_invalid_schema(mock_logger, client):
     ('ValidationError', 'Create and transfer!'),
     ('InputDoesNotExist', 'Hallucinations?'),
     ('TransactionOwnerError', 'Not yours!'),
-    ('TransactionNotInValidBlock', 'Wait, maybe?'),
     ('ValidationError', '?'),
 ))
 @patch('bigchaindb.web.views.base.logger')
@@ -358,7 +360,6 @@ def test_post_wrong_asset_division_transfer_returns_400(b, client, user_pk):
     assert res.json['message'] == expected_error_message
 
 
-@pytest.mark.tendermint
 def test_transactions_get_list_good(client):
     from functools import partial
 
@@ -385,7 +386,6 @@ def test_transactions_get_list_good(client):
         ]
 
 
-@pytest.mark.tendermint
 def test_transactions_get_list_bad(client):
     def should_not_be_called():
         assert False
@@ -402,31 +402,6 @@ def test_transactions_get_list_bad(client):
         assert client.get(url).status_code == 400
 
 
-@pytest.mark.tendermint
-def test_return_only_valid_transaction(client):
-    from bigchaindb import BigchainDB
-
-    def get_transaction_patched(status):
-        def inner(self, tx_id, include_status):
-            return {}, status
-        return inner
-
-    # NOTE: `get_transaction` only returns a transaction if it's included in an
-    #       UNDECIDED or VALID block, as well as transactions from the backlog.
-    #       As the endpoint uses `get_transaction`, we don't have to test
-    #       against invalid transactions here.
-    with patch('bigchaindb.BigchainDB.get_transaction',
-               get_transaction_patched(BigchainDB.TX_UNDECIDED)):
-        url = '{}{}'.format(TX_ENDPOINT, '123')
-        assert client.get(url).status_code == 404
-
-    with patch('bigchaindb.BigchainDB.get_transaction',
-               get_transaction_patched(BigchainDB.TX_IN_BACKLOG)):
-        url = '{}{}'.format(TX_ENDPOINT, '123')
-        assert client.get(url).status_code == 404
-
-
-@pytest.mark.tendermint
 @patch('requests.post')
 @pytest.mark.parametrize('mode', [
     ('', 'broadcast_tx_async'),
@@ -437,6 +412,12 @@ def test_return_only_valid_transaction(client):
 def test_post_transaction_valid_modes(mock_post, client, mode):
     from bigchaindb.models import Transaction
     from bigchaindb.common.crypto import generate_key_pair
+
+    def _mock_post(*args, **kwargs):
+        return Mock(json=Mock(return_value={'result': {'code': 0}}))
+
+    mock_post.side_effect = _mock_post
+
     alice = generate_key_pair()
     tx = Transaction.create([alice.public_key],
                             [([alice.public_key], 1)],

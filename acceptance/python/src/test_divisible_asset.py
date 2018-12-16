@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 # # Divisible assets integration testing
 # This test checks if we can successfully divide assets.
 # The script tests various things like:
@@ -70,7 +74,7 @@ def test_divisible_assets():
         prepared_token_tx,
         private_keys=alice.private_key)
 
-    bdb.transactions.send(fulfilled_token_tx, mode='commit')
+    bdb.transactions.send_commit(fulfilled_token_tx)
 
     # We store the `id` of the transaction to use it later on.
     bike_token_id = fulfilled_token_tx['id']
@@ -112,8 +116,7 @@ def test_divisible_assets():
         prepared_transfer_tx,
         private_keys=bob.private_key)
 
-    sent_transfer_tx = bdb.transactions.send(fulfilled_transfer_tx,
-                                             mode='commit')
+    sent_transfer_tx = bdb.transactions.send_commit(fulfilled_transfer_tx)
 
     # First, Bob checks if the transaction was successful.
     assert bdb.transactions.retrieve(
@@ -163,7 +166,7 @@ def test_divisible_assets():
     # Remember Bob, last time you spent 3 tokens already,
     # so you only have 7 left.
     with pytest.raises(BadRequest) as error:
-        bdb.transactions.send(fulfilled_transfer_tx, mode='commit')
+        bdb.transactions.send_commit(fulfilled_transfer_tx)
 
     # Now Bob gets an error saying that the amount he wanted to spent is
     # higher than the amount of tokens he has left.

@@ -1,3 +1,8 @@
+
+.. Copyright BigchainDB GmbH and BigchainDB contributors
+   SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+   Code is Apache-2.0 and docs are CC-BY-4.0
+
 Querying BigchainDB
 ===================
 
@@ -56,8 +61,10 @@ For example, if you're on a machine that's running a default BigchainDB node, th
     > use bigchain
     switched to db bigchain
     > show collections
+    abci_chains
     assets
     blocks
+    elections
     metadata
     pre_commit
     transactions

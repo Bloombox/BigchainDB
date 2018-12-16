@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 import bigchaindb
 import logging
 
@@ -7,8 +11,6 @@ import os
 
 
 DEFAULT_LOG_DIR = os.getcwd()
-BENCHMARK_LOG_LEVEL = 15
-
 
 DEFAULT_LOGGING_CONFIG = {
     'version': 1,
@@ -24,11 +26,6 @@ DEFAULT_LOGGING_CONFIG = {
             'class': 'logging.Formatter',
             'format': ('[%(asctime)s] [%(levelname)s] (%(name)s) '
                        '%(message)s (%(processName)-10s - pid: %(process)d)'),
-            'datefmt': '%Y-%m-%d %H:%M:%S',
-        },
-        'benchmark': {
-            'class': 'logging.Formatter',
-            'format': ('%(asctime)s, %(levelname)s, %(message)s'),
             'datefmt': '%Y-%m-%d %H:%M:%S',
         }
     },
@@ -55,29 +52,14 @@ DEFAULT_LOGGING_CONFIG = {
             'backupCount': 5,
             'formatter': 'file',
             'level': logging.ERROR,
-        },
-        'benchmark': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(DEFAULT_LOG_DIR, 'bigchaindb-benchmark.log'),
-            'mode': 'w',
-            'maxBytes':  209715200,
-            'backupCount': 5,
-            'formatter': 'benchmark',
-            'level': BENCHMARK_LOG_LEVEL,
         }
     },
     'loggers': {},
     'root': {
         'level': logging.DEBUG,
-        'handlers': ['console', 'file', 'errors', 'benchmark'],
+        'handlers': ['console', 'file', 'errors'],
     },
 }
-
-
-def benchmark(self, message, *args, **kws):
-    # Yes, logger takes its '*args' as 'args'.
-    if self.isEnabledFor(BENCHMARK_LOG_LEVEL):
-        self._log(BENCHMARK_LOG_LEVEL, message, args, **kws)
 
 
 def _normalize_log_level(level):
@@ -100,11 +82,6 @@ def setup_logging():
 
     """
 
-    # Add a new logging level for logging benchmark
-    logging.addLevelName(BENCHMARK_LOG_LEVEL, 'BENCHMARK')
-    logging.BENCHMARK = BENCHMARK_LOG_LEVEL
-    logging.Logger.benchmark = benchmark
-
     logging_configs = DEFAULT_LOGGING_CONFIG
     new_logging_configs = bigchaindb.config['log']
 
@@ -123,7 +100,6 @@ def setup_logging():
     if 'level_logfile' in new_logging_configs:
         level = _normalize_log_level(new_logging_configs['level_logfile'])
         logging_configs['handlers']['file']['level'] = level
-        logging_configs['handlers']['benchmark']['level'] = level
 
     if 'fmt_console' in new_logging_configs:
         fmt = new_logging_configs['fmt_console']

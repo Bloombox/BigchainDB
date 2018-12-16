@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 """This module provides the blueprint for some basic API endpoints.
 
 For more information please refer to the documentation: http://bigchaindb.com/http-api
@@ -29,9 +33,9 @@ class TransactionApi(Resource):
         pool = current_app.config['bigchain_pool']
 
         with pool() as bigchain:
-            tx, status = bigchain.get_transaction(tx_id, include_status=True)
+            tx = bigchain.get_transaction(tx_id)
 
-        if not tx or status is not bigchain.TX_VALID:
+        if not tx:
             return make_error(404)
 
         return tx.to_dict()

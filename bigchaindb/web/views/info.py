@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 """API Index endpoint"""
 
 import flask
@@ -43,6 +47,7 @@ def get_api_v1_info(api_prefix):
     return {
         'docs': ''.join(docs_url),
         'transactions': '{}transactions/'.format(api_prefix),
+        'blocks': '{}blocks/'.format(api_prefix),
         'assets': '{}assets/'.format(api_prefix),
         'outputs': '{}outputs/'.format(api_prefix),
         'streams': websocket_root,

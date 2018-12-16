@@ -1,3 +1,7 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 # # Double Spend testing
 # This test challenge the system with double spends.
 
@@ -26,7 +30,7 @@ def test_double_create():
 
     def send_and_queue(tx):
         try:
-            bdb.transactions.send(tx)
+            bdb.transactions.send_commit(tx)
             results.put('OK')
         except bigchaindb_driver.exceptions.TransportError as e:
             results.put('FAIL')

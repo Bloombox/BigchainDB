@@ -1,10 +1,12 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 """This module is tests related to schema checking, but _not_ of granular schematic
 properties related to validation.
 """
 
 from unittest.mock import patch
-
-import pytest
 
 from hypothesis import given
 from hypothesis_regex import regex
@@ -19,9 +21,6 @@ from bigchaindb.common.schema import (
 SUPPORTED_CRYPTOCONDITION_TYPES = ('threshold-sha-256', 'ed25519-sha-256')
 UNSUPPORTED_CRYPTOCONDITION_TYPES = (
     'preimage-sha-256', 'prefix-sha-256', 'rsa-sha-256')
-
-
-pytestmark = pytest.mark.tendermint
 
 
 ################################################################################

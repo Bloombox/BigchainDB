@@ -1,5 +1,5 @@
 FROM python:3.6
-LABEL maintainer "dev@bigchaindb.com"
+LABEL maintainer "devs@bigchaindb.com"
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app/
 WORKDIR /usr/src/app
@@ -7,7 +7,6 @@ RUN apt-get -qq update \
     && apt-get -y upgrade \
     && apt-get install -y jq \
     && pip install --no-cache-dir --process-dependency-links . \
-    && pip install --no-cache-dir . \
     && apt-get autoremove \
     && apt-get clean
 

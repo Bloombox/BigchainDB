@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 # BigchainDB Server documentation build configuration file, created by
 # sphinx-quickstart on Tue Jan 19 14:42:58 2016.
 #
@@ -58,9 +60,9 @@ extensions = [
 
 # autodoc settings
 autodoc_member_order = 'bysource'
-autodoc_default_flags = [
-    'members',
-]
+autodoc_default_options = {
+    'members': None,
+}
 
 todo_include_todos = True
 

@@ -1,8 +1,13 @@
+# Copyright BigchainDB GmbH and BigchainDB contributors
+# SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+# Code is Apache-2.0 and docs are CC-BY-4.0
+
 import copy
 import logging
 
 from bigchaindb.log import DEFAULT_LOGGING_CONFIG as log_config
 from bigchaindb.lib import BigchainDB  # noqa
+from bigchaindb.migrations.chain_migration_election import ChainMigrationElection
 from bigchaindb.version import __version__  # noqa
 from bigchaindb.core import App  # noqa
 
@@ -90,7 +95,10 @@ _config = copy.deepcopy(config)
 from bigchaindb.common.transaction import Transaction  # noqa
 from bigchaindb import models                          # noqa
 from bigchaindb.upsert_validator import ValidatorElection  # noqa
+from bigchaindb.elections.vote import Vote  # noqa
 
 Transaction.register_type(Transaction.CREATE, models.Transaction)
 Transaction.register_type(Transaction.TRANSFER, models.Transaction)
-Transaction.register_type(ValidatorElection.VALIDATOR_ELECTION, ValidatorElection)
+Transaction.register_type(ValidatorElection.OPERATION, ValidatorElection)
+Transaction.register_type(ChainMigrationElection.OPERATION, ChainMigrationElection)
+Transaction.register_type(Vote.OPERATION, Vote)

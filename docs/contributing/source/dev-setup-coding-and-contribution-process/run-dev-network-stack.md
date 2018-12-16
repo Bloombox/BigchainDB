@@ -1,3 +1,9 @@
+<!---
+Copyright BigchainDB GmbH and BigchainDB contributors
+SPDX-License-Identifier: (Apache-2.0 AND CC-BY-4.0)
+Code is Apache-2.0 and docs are CC-BY-4.0
+--->
+
 # Run a BigchainDB network
 
 **NOT for Production Use**
@@ -32,7 +38,7 @@ $ curl -fOL https://raw.githubusercontent.com/bigchaindb/bigchaindb/${GIT_BRANCH
 
 ## Quick Start
 If you run `stack.sh` out of the box i.e. without any configuration changes, you will be able to deploy a 4 node
-BigchainDB network with Docker containers, created from `master` branch of `bigchaindb/bigchaindb` repo and Tendermint version `0.22.3`.
+BigchainDB network with Docker containers, created from `master` branch of `bigchaindb/bigchaindb` repo and Tendermint version `0.22.8`.
 
 **Note**: Run `stack.sh` with either root or non-root user with sudo enabled.
 
@@ -90,7 +96,7 @@ $ bash stack.sh -h
         variable. (default: master)
 
     ENV[TM_VERSION]
-        (Optional) Tendermint version to use for the setup. (default: 0.22.3)
+        (Optional) Tendermint version to use for the setup. (default: 0.22.8)
 
     ENV[MONGO_VERSION]
         (Optional) MongoDB version to use with the setup. (default: 3.6)
@@ -171,8 +177,8 @@ $ export STACK_REPO=bigchaindb/bigchaindb
 # Default: master
 $ export STACK_BRANCH=master
 
-#Optional, since 0.22.3 is the default tendermint version.
-$ export TM_VERSION=0.22.3
+#Optional, since 0.22.8 is the default tendermint version.
+$ export TM_VERSION=0.22.8
 
 #Optional, since 3.6 is the default MongoDB version.
 $ export MONGO_VERSION=3.6
@@ -222,8 +228,8 @@ $ export STACK_REPO=bigchaindb/bigchaindb
 # Default: master
 $ export STACK_BRANCH=master
 
-#Optional, since 0.22.3 is the default tendermint version
-$ export TM_VERSION=0.22.3
+#Optional, since 0.22.8 is the default tendermint version
+$ export TM_VERSION=0.22.8
 
 #Optional, since 3.6 is the default MongoDB version.
 $ export MONGO_VERSION=3.6
