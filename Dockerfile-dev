@@ -3,7 +3,7 @@ FROM python:${python_version}
 LABEL maintainer "devs@bigchaindb.com"
 
 RUN apt-get update \
-    && apt-get install -y vim \
+    && apt-get install -y vim bash \
     && pip install -U pip \
     && pip install pynacl \
     && apt-get autoremove \

@@ -1,5 +1,5 @@
 # DNS name of the bigchaindb node
-NODE_FQDN="test.bigchaindb.com"
+NODE_FQDN="bdb.sandbox.private.usw2.bloomware.services"
 
 # NODE_FRONTEND_PORT is the port number on which this node's services
 # are available to external clients. Default is 443(https)
@@ -11,43 +11,46 @@ AUTH_MODE="secret-token"
 # Secret token used for authorization of
 # POST requests to the bigchaindb node
 # Only required when AUTH_MODE=secret-token
-SECRET_TOKEN="test-secret"
+SECRET_TOKEN="aDGSSLf7AvVqMCtUmPYUh1Ti2"
 
 # Absolute path for the SSL certificate key
-HTTPS_CERT_KEY_FILE_NAME="/path/to/https.key"
+HTTPS_CERT_KEY_FILE_NAME="/config/pki/node.key"
 
 # Absolute path for the SSL certificate chain
-HTTPS_CERT_CHAIN_FILE_NAME="/path/to/https.crt"
+HTTPS_CERT_CHAIN_FILE_NAME="/config/pki/node.pem"
 
 # MongoDB Admin user credentials
-MDB_ADMIN_USER="adminUser"
-MDB_ADMIN_PASSWORD="superstrongpassword"
+MDB_ADMIN_USER="ledger"
+MDB_ADMIN_PASSWORD="a9fd4adaee9ccada10f6ca8a9ed753117c65"
 
 # BigchainDB instance name. This name should be unique
 BDB_INSTANCE_NAME="bdb-instance-0"
 
 # Comma separated list of initial peers in the
 # network.
-BDB_PERSISTENT_PEERS="bdb-instance-0,bdb-instance-1,bdb-instance-2,bdb-instance-3"
+#BDB_PERSISTENT_PEERS="bdb-instance-0,bdb-instance-1,bdb-instance-2,bdb-instance-3"
+BDB_PERSISTENT_PEERS="bdb-instance-0"
 
 # Comma separated list of validators in the
 # network
-BDB_VALIDATORS="bdb-instance-0,bdb-instance-1,bdb-instance-2,bdb-instance-3"
+#BDB_VALIDATORS="bdb-instance-0,bdb-instance-1,bdb-instance-2,bdb-instance-3"
+BDB_VALIDATORS="bdb-instance-0"
 
 # Comma separated list of voting
 # power of all validators. Make sure
 # order and number of powers corresponds
 # to BDB_VALIDATORS
-BDB_VALIDATOR_POWERS="10,10,10,10"
+#BDB_VALIDATOR_POWERS="10,10,10,10"
+BDB_VALIDATOR_POWERS="10"
 
 # Offical time of blockchain start
 BDB_GENESIS_TIME="0001-01-01T00:00:00Z"
 
 # Blockchain ID must be unique for
 # every blockchain
-BDB_CHAIN_ID="test-chain-rwcPML"
+BDB_CHAIN_ID="arkstream-sandbox"
 
 # IP Address of the resolver(DNS server).
 # i.e. IP of `kube-dns`, can be retrieved using:
 # $ kubectl get services --namespace=kube-system -l k8s-app=kube-dns
-NODE_DNS_SERVER="10.0.0.10"
+NODE_DNS_SERVER="10.195.0.10"

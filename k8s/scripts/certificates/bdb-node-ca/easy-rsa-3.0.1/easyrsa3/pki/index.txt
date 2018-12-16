@@ -1,0 +1,3 @@
+V	280728182417Z		01	unknown	/C=US/ST=California/L=Sacramento/O=Bloombox LLC/OU=MONGO-MEMBER/CN=mdb-instance-0/emailAddress=dev@bigchaindb.com
+V	280728182420Z		02	unknown	/C=US/ST=California/L=Sacramento/O=Bloombox LLC/OU=MONGO-CLIENT/CN=bdb-instance-0/emailAddress=dev@bigchaindb.com
+V	280728182422Z		03	unknown	/C=US/ST=California/L=Sacramento/O=Bloombox LLC/OU=MONGO-CLIENT/CN=mdb-mon-instance-0/emailAddress=dev@bigchaindb.com

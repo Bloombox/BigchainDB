@@ -1054,7 +1054,10 @@ class Transaction(object):
 
         # cryptoconditions makes no assumptions of the encoding of the
         # message to sign or verify. It only accepts bytestrings
+        print("!!! IT GOT TO FINAL COMPARE !!!")
         ffill_valid = parsed_ffill.validate(message=message.digest())
+        print("!!! FINAL COMPARE: %s !!!" % ((output_valid and ffill_valid) and "fine" or "not fine"))
+        print("!!! VALUES: %s, %s !!!" % ((output_valid, ffill_valid)))
         return output_valid and ffill_valid
 
     # This function is required by `lru_cache` to create a key for memoization
